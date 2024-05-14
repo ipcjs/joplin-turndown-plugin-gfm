@@ -309,6 +309,39 @@
 | Heading | Not a heading |</pre>
 </div>
 
+<div class="case" data-name="bold row as head">
+  <div class="input">
+    <table style="border-collapse: collapse; min-width: 100%;">
+      <colgroup>
+        <col style="width: 130px;">
+        <col style="width: 130px;">
+      </colgroup>
+      <tbody>
+          <tr class="fuck">
+              <td style="width: 130px; padding: 8px; border: 1px solid;">
+                  <div><span style="font-weight: bold;">title2</span></div>
+              </td>
+              <td style="width: 130px; padding: 8px; border: 1px solid;">
+                  <div><span style="font-weight: bold;">name</span></div>
+              </td>
+          </tr>
+          <tr>
+              <td style="width: 130px; padding: 8px; border: 1px solid;">
+                  <div>hello</div>
+              </td>
+              <td style="width: 130px; padding: 8px; border: 1px solid;">
+                  <div>word</div>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+  </div>
+  <pre class="expected">  
+| title2 | name |
+| --- | --- |
+| hello | word |</pre>
+</div>
+
 <div class="case" data-name="highlighted code block with html">
   <div class="input">
     <div class="highlight highlight-text-html-basic">

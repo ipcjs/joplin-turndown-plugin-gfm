@@ -72,6 +72,18 @@ rules.table = {
   }
 }
 
+rules.tableCaption = {
+  filter: ['caption'],
+  replacement: () => ''
+}
+
+rules.tableColgroup = {
+  filter: ['colgroup', 'col'],
+  replacement: (content, node) => {
+    return ''
+  }
+}
+
 rules.tableSection = {
   filter: ['thead', 'tbody', 'tfoot'],
   replacement: function (content) {
@@ -91,18 +103,32 @@ function isHeadingRow (tr) {
     (
       parentNode.firstChild === tr &&
       (parentNode.nodeName === 'TABLE' || isFirstTbody(parentNode)) &&
-      every.call(tr.childNodes, function (n) { return n.nodeName === 'TH' })
+      every.call(tr.childNodes, (/** @type {HTMLElement} */n) => {
+        if (n.nodeName === 'TH') {
+          return true
+        }
+
+        if (n.nodeName === 'TD' &&
+          n.childNodes.length === 1 && n.childNodes[0].nodeName === 'DIV' &&
+          n.childNodes[0].childNodes.length === 1 && n.childNodes[0].childNodes[0].nodeName === 'SPAN') {
+            /** @type {HTMLSpanElement} */
+          const span = n.childNodes[0].childNodes[0]
+
+          return span.style.fontWeight === 'bold'
+        }
+        return false
+      })
     )
   )
 }
 
-function isFirstTbody (element) {
-  var previousSibling = element.previousSibling
+function isFirstTbody (/** @type {HTMLElement} */element) {
+  var previousSibling = element.previousElementSibling
   return (
     element.nodeName === 'TBODY' && (
       !previousSibling ||
       (
-        previousSibling.nodeName === 'THEAD' &&
+        (previousSibling.nodeName === 'THEAD' || previousSibling.nodeName === 'COLGROUP') &&
         /^\s*$/i.test(previousSibling.textContent)
       )
     )

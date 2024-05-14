@@ -32,13 +32,14 @@
     "url": "https://github.com/laurent22/joplin-turndown-plugin-gfm.git"
   },
   "scripts": {
-    "watch":"rollup -c config/rollup.config.cjs.js -w",
+    "watch":"rollup -c config/rollup.config.cjs.js -w -m",
     "build": "npm run build-cjs && npm run build-es && npm run build-iife",
     "build-cjs": "rollup -c config/rollup.config.cjs.js && rollup -c config/rollup.config.browser.cjs.js",
     "build-es": "rollup -c config/rollup.config.es.js && rollup -c config/rollup.config.browser.es.js",
     "build-iife": "rollup -c config/rollup.config.iife.js",
     "build-test": "browserify test/turndown-plugin-gfm-test.js --outfile test/turndown-plugin-gfm-test.browser.js",
     "prepublish": "npm run build",
+    "test:unit": "npm run build-test && node test/turndown-plugin-gfm-test.js",
     "test": "npm run build && standard ./src/**/*.js && node test/turndown-plugin-gfm-test.js"
   }
 }
