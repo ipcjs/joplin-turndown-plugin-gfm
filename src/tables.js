@@ -10,23 +10,24 @@ rules.tableCell = {
   }
 }
 
+const ALIGN_MAP = { left: ':--', right: '--:', center: ':-:', default: '---' }
+
 rules.tableRow = {
   filter: 'tr',
-  replacement: function (content, node) {
+  replacement: function (content, /**@type {HTMLElement}*/node) {
     const parentTable = nodeParentTable(node);
     if (tableShouldBeSkipped(parentTable)) return content;
 
     var borderCells = ''
-    var alignMap = { left: ':--', right: '--:', center: ':-:' }
 
     if (isHeadingRow(node)) {
       const colCount = tableColCount(parentTable);
       for (var i = 0; i < colCount; i++) {
-        const childNode = colCount >= node.childNodes.length ? null : node.childNodes[i];
-        var border = '---'
+        const childNode = i >= node.childNodes.length ? null : node.childNodes[i];
+        var border = ALIGN_MAP.default
         var align = childNode ? (childNode.getAttribute('align') || '').toLowerCase() : '';
 
-        if (align) border = alignMap[align] || border
+        if (align) border = ALIGN_MAP[align] || border
 
         if (childNode) {
           borderCells += cell(border, node.childNodes[i])
@@ -46,7 +47,7 @@ rules.table = {
     return node.nodeName === 'TABLE'
   },
 
-  replacement: function (content, node) {
+  replacement: function (/**@type {string}*/content, node) {
     if (tableShouldBeSkipped(node)) return content;
 
     // Ensure there are no blank lines
@@ -55,7 +56,7 @@ rules.table = {
     // If table has no heading, add an empty one so as to get a valid Markdown table
     var secondLine = content.trim().split('\n');
     if (secondLine.length >= 2) secondLine = secondLine[1]
-    var secondLineIsDivider = secondLine.indexOf('| ---') === 0
+    var secondLineIsDivider = Object.values(ALIGN_MAP).some((align) => secondLine.startsWith(`| ${align}`))
     
     var columnCount = tableColCount(node);
     var emptyHeader = ''
