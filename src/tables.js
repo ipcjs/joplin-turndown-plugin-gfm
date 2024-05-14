@@ -5,7 +5,7 @@ var rules = {}
 rules.tableCell = {
   filter: ['th', 'td'],
   replacement: function (content, node) {
-    if (tableShouldBeSkipped(nodeParentTable(node))) return content;
+    if (tableShouldBeSkipped(nodeParentTable(node))) return content
     return cell(content, node)
   }
 }
@@ -14,25 +14,25 @@ const ALIGN_MAP = { left: ':--', right: '--:', center: ':-:', default: '---' }
 
 rules.tableRow = {
   filter: 'tr',
-  replacement: function (content, /**@type {HTMLElement}*/node) {
-    const parentTable = nodeParentTable(node);
-    if (tableShouldBeSkipped(parentTable)) return content;
+  replacement: function (content, /** @type {HTMLElement} */node) {
+    const parentTable = nodeParentTable(node)
+    if (tableShouldBeSkipped(parentTable)) return content
 
     var borderCells = ''
 
     if (isHeadingRow(node)) {
-      const colCount = tableColCount(parentTable);
+      const colCount = tableColCount(parentTable)
       for (var i = 0; i < colCount; i++) {
-        const childNode = i >= node.childNodes.length ? null : node.childNodes[i];
+        const childNode = i >= node.childNodes.length ? null : node.childNodes[i]
         var border = ALIGN_MAP.default
-        var align = childNode ? (childNode.getAttribute('align') || '').toLowerCase() : '';
+        var align = childNode ? (childNode.getAttribute('align') || '').toLowerCase() : ''
 
         if (align) border = ALIGN_MAP[align] || border
 
         if (childNode) {
           borderCells += cell(border, node.childNodes[i])
         } else {
-          borderCells += cell(border, null, i);
+          borderCells += cell(border, null, i)
         }
       }
     }
@@ -47,18 +47,18 @@ rules.table = {
     return node.nodeName === 'TABLE'
   },
 
-  replacement: function (/**@type {string}*/content, node) {
-    if (tableShouldBeSkipped(node)) return content;
+  replacement: function (/** @type {string} */content, node) {
+    if (tableShouldBeSkipped(node)) return content
 
     // Ensure there are no blank lines
     content = content.replace(/\n+/g, '\n')
 
     // If table has no heading, add an empty one so as to get a valid Markdown table
-    var secondLine = content.trim().split('\n');
+    var secondLine = content.trim().split('\n')
     if (secondLine.length >= 2) secondLine = secondLine[1]
     var secondLineIsDivider = Object.values(ALIGN_MAP).some((align) => secondLine.startsWith(`| ${align}`))
-    
-    var columnCount = tableColCount(node);
+
+    var columnCount = tableColCount(node)
     var emptyHeader = ''
     if (columnCount && !secondLineIsDivider) {
       emptyHeader = '|' + '     |'.repeat(columnCount) + '\n' + '|' + ' --- |'.repeat(columnCount)
@@ -109,53 +109,53 @@ function cell (content, node = null, index = null) {
   if (index === null) index = indexOf.call(node.parentNode.childNodes, node)
   var prefix = ' '
   if (index === 0) prefix = '| '
-  let filteredContent = content.trim().replace(/\n\r/g, '<br>').replace(/\n/g, "<br>");
+  let filteredContent = content.trim().replace(/\n\r/g, '<br>').replace(/\n/g, '<br>')
   filteredContent = filteredContent.replace(/\|/g, '\\|')
-  while (filteredContent.length < 3) filteredContent += ' ';
-  if (node) filteredContent = handleColSpan(filteredContent, node, ' ');
+  while (filteredContent.length < 3) filteredContent += ' '
+  if (node) filteredContent = handleColSpan(filteredContent, node, ' ')
   return prefix + filteredContent + ' |'
 }
 
-function nodeContainsTable(node) {
-  if (!node.childNodes) return false;
+function nodeContainsTable (node) {
+  if (!node.childNodes) return false
 
   for (let i = 0; i < node.childNodes.length; i++) {
-    const child = node.childNodes[i];
-    if (child.nodeName === 'TABLE') return true;
-    if (nodeContainsTable(child)) return true;
+    const child = node.childNodes[i]
+    if (child.nodeName === 'TABLE') return true
+    if (nodeContainsTable(child)) return true
   }
-  return false;
+  return false
 }
 
 // Various conditions under which a table should be skipped - i.e. each cell
 // will be rendered one after the other as if they were paragraphs.
-function tableShouldBeSkipped(tableNode) {
-  if (!tableNode) return true;
-  if (!tableNode.rows) return true;
-  if (tableNode.rows.length === 1 && tableNode.rows[0].childNodes.length <= 1) return true; // Table with only one cell
-  if (nodeContainsTable(tableNode)) return true;
-  return false;
+function tableShouldBeSkipped (tableNode) {
+  if (!tableNode) return true
+  if (!tableNode.rows) return true
+  if (tableNode.rows.length === 1 && tableNode.rows[0].childNodes.length <= 1) return true // Table with only one cell
+  if (nodeContainsTable(tableNode)) return true
+  return false
 }
 
-function nodeParentTable(node) {
-  let parent = node.parentNode;
+function nodeParentTable (node) {
+  let parent = node.parentNode
   while (parent.nodeName !== 'TABLE') {
-    parent = parent.parentNode;
-    if (!parent) return null;
+    parent = parent.parentNode
+    if (!parent) return null
   }
-  return parent;
+  return parent
 }
 
-function handleColSpan(content, node, emptyChar) {
-  const colspan = node.getAttribute('colspan') || 1;
+function handleColSpan (content, node, emptyChar) {
+  const colspan = node.getAttribute('colspan') || 1
   for (let i = 1; i < colspan; i++) {
-    content += ' | ' + emptyChar.repeat(3);
+    content += ' | ' + emptyChar.repeat(3)
   }
   return content
 }
 
-function tableColCount(node) {
-  let maxColCount = 0;
+function tableColCount (node) {
+  let maxColCount = 0
   for (let i = 0; i < node.rows.length; i++) {
     const row = node.rows[i]
     const colCount = row.childNodes.length
