@@ -114,7 +114,7 @@ function isHeadingRow (tr) {
             /** @type {HTMLSpanElement} */
           const span = n.childNodes[0].childNodes[0]
 
-          return span.style.fontWeight === 'bold'
+          return span.style.fontWeight.includes('bold')
         }
         return false
       })
