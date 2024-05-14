@@ -1,6 +1,12 @@
 var indexOf = Array.prototype.indexOf
 var every = Array.prototype.every
 var rules = {}
+const alignMap = { left: ':--', right: '--:', center: ':-:', default: '---' }
+
+// We need to cache the result of tableShouldBeSkipped() as it is expensive.
+// Caching it means we went from about 9000 ms for rendering down to 90 ms.
+// Fixes https://github.com/laurent22/joplin/issues/6736
+const tableShouldBeSkippedCache_ = new WeakMap()
 
 rules.tableCell = {
   filter: ['th', 'td'],
@@ -9,8 +15,6 @@ rules.tableCell = {
     return cell(content, node)
   }
 }
-
-const ALIGN_MAP = { left: ':--', right: '--:', center: ':-:', default: '---' }
 
 rules.tableRow = {
   filter: 'tr',
@@ -23,11 +27,11 @@ rules.tableRow = {
     if (isHeadingRow(node)) {
       const colCount = tableColCount(parentTable)
       for (var i = 0; i < colCount; i++) {
-        const childNode = i >= node.childNodes.length ? null : node.childNodes[i]
-        var border = ALIGN_MAP.default
+        const childNode = i < node.childNodes.length ? node.childNodes[i] : null
+        var border = alignMap.default
         var align = childNode ? (childNode.getAttribute('align') || '').toLowerCase() : ''
 
-        if (align) border = ALIGN_MAP[align] || border
+        if (align) border = alignMap[align] || border
 
         if (childNode) {
           borderCells += cell(border, node.childNodes[i])
@@ -56,7 +60,7 @@ rules.table = {
     // If table has no heading, add an empty one so as to get a valid Markdown table
     var secondLine = content.trim().split('\n')
     if (secondLine.length >= 2) secondLine = secondLine[1]
-    var secondLineIsDivider = Object.values(ALIGN_MAP).some((align) => secondLine.startsWith(`| ${align}`))
+    var secondLineIsDivider = Object.values(alignMap).some((align) => secondLine.startsWith(`| ${align}`))
 
     var columnCount = tableColCount(node)
     var emptyHeader = ''
@@ -130,6 +134,16 @@ function nodeContainsTable (node) {
 // Various conditions under which a table should be skipped - i.e. each cell
 // will be rendered one after the other as if they were paragraphs.
 function tableShouldBeSkipped (tableNode) {
+  const cached = tableShouldBeSkippedCache_.get(tableNode)
+  if (cached !== undefined) return cached
+
+  const result = tableShouldBeSkipped_(tableNode)
+
+  tableShouldBeSkippedCache_.set(tableNode, result)
+  return result
+}
+
+function tableShouldBeSkipped_ (tableNode) {
   if (!tableNode) return true
   if (!tableNode.rows) return true
   if (tableNode.rows.length === 1 && tableNode.rows[0].childNodes.length <= 1) return true // Table with only one cell
