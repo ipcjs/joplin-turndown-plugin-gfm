@@ -58,9 +58,11 @@ rules.table = {
     content = content.replace(/\n+/g, '\n')
 
     // If table has no heading, add an empty one so as to get a valid Markdown table
-    let secondLine = content.trim().split('\n')
-    if (secondLine.length >= 2) secondLine = secondLine[1]
-    const secondLineIsDivider = Object.values(alignMap).some((align) => secondLine.startsWith(`| ${align}`))
+    const lines = content.trim().split('\n')
+    /** @type {string | undefined} */
+    let secondLine
+    if (lines.length >= 2) secondLine = lines[1]
+    const secondLineIsDivider = Object.values(alignMap).some((align) => secondLine?.startsWith(`| ${align}`))
 
     const columnCount = tableColCount(node)
     let emptyHeader = ''
