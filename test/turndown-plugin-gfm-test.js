@@ -1,11 +1,11 @@
-var path = require('path')
-var Attendant = require('turndown-attendant')
-var TurndownService = require('turndown')
-var gfm = require('../lib/turndown-plugin-gfm.cjs').gfm
+const path = require('path')
+const Attendant = require('turndown-attendant')
+const TurndownService = require('turndown')
+const gfm = require('../lib/turndown-plugin-gfm.cjs').gfm
 
-var attendant = new Attendant({
+const attendant = new Attendant({
   file: path.join(__dirname, 'index.html'),
-  TurndownService: TurndownService,
+  TurndownService,
   beforeEach: function (turndownService) {
     turndownService.use(gfm)
   }

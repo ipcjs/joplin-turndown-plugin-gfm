@@ -9,7 +9,7 @@
   "devDependencies": {
     "browserify": "^14.5.0",
     "rollup": "^0.50.0",
-    "standard": "^10.0.3",
+    "standard": "^17.1.0",
     "turndown": "4.0.1",
     "turndown-attendant": "0.0.2"
   },
@@ -32,7 +32,7 @@
     "url": "https://github.com/laurent22/joplin-turndown-plugin-gfm.git"
   },
   "scripts": {
-    "watch":"rollup -c config/rollup.config.cjs.js -w -m",
+    "watch": "rollup -c config/rollup.config.cjs.js -w -m",
     "build": "npm run build-cjs && npm run build-es && npm run build-iife",
     "build-cjs": "rollup -c config/rollup.config.cjs.js && rollup -c config/rollup.config.browser.cjs.js",
     "build-es": "rollup -c config/rollup.config.es.js && rollup -c config/rollup.config.browser.es.js",

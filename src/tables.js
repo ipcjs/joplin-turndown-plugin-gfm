@@ -1,6 +1,6 @@
-var indexOf = Array.prototype.indexOf
-var every = Array.prototype.every
-var rules = {}
+const indexOf = Array.prototype.indexOf
+const every = Array.prototype.every
+const rules = {}
 const alignMap = { left: ':--', right: '--:', center: ':-:', default: '---' }
 
 // We need to cache the result of tableShouldBeSkipped() as it is expensive.
@@ -22,14 +22,14 @@ rules.tableRow = {
     const parentTable = nodeParentTable(node)
     if (tableShouldBeSkipped(parentTable)) return content
 
-    var borderCells = ''
+    let borderCells = ''
 
     if (isHeadingRow(node)) {
       const colCount = tableColCount(parentTable)
-      for (var i = 0; i < colCount; i++) {
+      for (let i = 0; i < colCount; i++) {
         const childNode = i < node.childNodes.length ? node.childNodes[i] : null
-        var border = alignMap.default
-        var align = childNode ? (childNode.getAttribute('align') || '').toLowerCase() : ''
+        let border = alignMap.default
+        const align = childNode ? (childNode.getAttribute('align') || '').toLowerCase() : ''
 
         if (align) border = alignMap[align] || border
 
@@ -58,12 +58,12 @@ rules.table = {
     content = content.replace(/\n+/g, '\n')
 
     // If table has no heading, add an empty one so as to get a valid Markdown table
-    var secondLine = content.trim().split('\n')
+    let secondLine = content.trim().split('\n')
     if (secondLine.length >= 2) secondLine = secondLine[1]
-    var secondLineIsDivider = Object.values(alignMap).some((align) => secondLine.startsWith(`| ${align}`))
+    const secondLineIsDivider = Object.values(alignMap).some((align) => secondLine.startsWith(`| ${align}`))
 
-    var columnCount = tableColCount(node)
-    var emptyHeader = ''
+    const columnCount = tableColCount(node)
+    let emptyHeader = ''
     if (columnCount && !secondLineIsDivider) {
       emptyHeader = '|' + '     |'.repeat(columnCount) + '\n' + '|' + ' --- |'.repeat(columnCount)
     }
@@ -97,7 +97,7 @@ rules.tableSection = {
 //   following a blank THEAD)
 // - and every cell is a TH
 function isHeadingRow (tr) {
-  var parentNode = tr.parentNode
+  const parentNode = tr.parentNode
   return (
     parentNode.nodeName === 'THEAD' ||
     (
@@ -111,7 +111,7 @@ function isHeadingRow (tr) {
         if (n.nodeName === 'TD' &&
           n.childNodes.length === 1 && n.childNodes[0].nodeName === 'DIV' &&
           n.childNodes[0].childNodes.length === 1 && n.childNodes[0].childNodes[0].nodeName === 'SPAN') {
-            /** @type {HTMLSpanElement} */
+          /** @type {HTMLSpanElement} */
           const span = n.childNodes[0].childNodes[0]
 
           return span.style.fontWeight.includes('bold')
@@ -123,7 +123,7 @@ function isHeadingRow (tr) {
 }
 
 function isFirstTbody (/** @type {HTMLElement} */element) {
-  var previousSibling = element.previousElementSibling
+  const previousSibling = element.previousElementSibling
   return (
     element.nodeName === 'TBODY' && (
       !previousSibling ||
@@ -137,7 +137,7 @@ function isFirstTbody (/** @type {HTMLElement} */element) {
 
 function cell (content, node = null, index = null) {
   if (index === null) index = indexOf.call(node.parentNode.childNodes, node)
-  var prefix = ' '
+  let prefix = ' '
   if (index === 0) prefix = '| '
   let filteredContent = content.trim().replace(/\n\r/g, '<br>').replace(/\n/g, '<br>')
   filteredContent = filteredContent.replace(/\|/g, '\\|')
@@ -208,5 +208,5 @@ export default function tables (turndownService) {
   turndownService.keep(function (node) {
     return node.nodeName === 'TABLE'
   })
-  for (var key in rules) turndownService.addRule(key, rules[key])
+  for (const key in rules) turndownService.addRule(key, rules[key])
 }
