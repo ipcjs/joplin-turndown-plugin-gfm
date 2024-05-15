@@ -3,12 +3,13 @@
   "description": "Turndown plugin to add GitHub Flavored Markdown extensions.",
   "version": "1.0.12",
   "author": "Dom Christie",
-  "main": "lib/turndown-plugin-gfm.cjs.js",
-  "module": "lib/turndown-plugin-gfm.es.js",
-  "jsnext:main": "lib/turndown-plugin-gfm.es.js",
+  "type": "module",
+  "main": "lib/turndown-plugin-gfm.cjs",
+  "module": "lib/turndown-plugin-gfm.mjs",
+  "jsnext:main": "lib/turndown-plugin-gfm.mjs",
   "devDependencies": {
     "browserify": "^14.5.0",
-    "rollup": "^0.50.0",
+    "rollup": "^4.17.2",
     "standard": "^17.1.0",
     "turndown": "4.0.1",
     "turndown-attendant": "0.0.2"
@@ -37,9 +38,9 @@
     "build-cjs": "rollup -c config/rollup.config.cjs.js && rollup -c config/rollup.config.browser.cjs.js",
     "build-es": "rollup -c config/rollup.config.es.js && rollup -c config/rollup.config.browser.es.js",
     "build-iife": "rollup -c config/rollup.config.iife.js",
-    "build-test": "browserify test/turndown-plugin-gfm-test.js --outfile test/turndown-plugin-gfm-test.browser.js",
+    "build-test": "browserify test/turndown-plugin-gfm-test.cjs --outfile test/turndown-plugin-gfm-test.browser.js",
     "prepublish": "npm run build",
-    "test:unit": "npm run build-test && node test/turndown-plugin-gfm-test.js",
-    "test": "npm run build && standard ./src/**/*.js && node test/turndown-plugin-gfm-test.js"
+    "test:unit": "npm run build-test && node test/turndown-plugin-gfm-test.cjs",
+    "test": "npm run build && standard ./src/**/*.js && node test/turndown-plugin-gfm-test.cjs"
   }
 }
