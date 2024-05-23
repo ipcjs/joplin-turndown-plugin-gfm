@@ -110,18 +110,46 @@ function isHeadingRow (tr) {
           return true
         }
 
-        if (n.nodeName === 'TD' &&
-          n.childNodes.length === 1 && n.childNodes[0].nodeName === 'DIV' &&
-          n.childNodes[0].childNodes.length === 1 && n.childNodes[0].childNodes[0].nodeName === 'SPAN') {
-          /** @type {HTMLSpanElement} */
-          const span = n.childNodes[0].childNodes[0]
-
-          return span.style.fontWeight.includes('bold')
+        if (n.nodeName === 'TD' && (
+          lastMatchChildNode(n, [['DIV', 'SPAN']])?.style.fontWeight.includes('bold') ||
+          lastMatchChildNode(n, [['DIV', 'B']]) ||
+          !n.textContent.trim()
+        )) {
+          return true
         }
         return false
       })
     )
   )
+}
+
+/**
+ * @param {HTMLElement} node
+ * @param {(string | [string, string | string[]])[] | string | null} pattern
+ * @returns {HTMLElement | null}
+ */
+function lastMatchChildNode (node, pattern) {
+  if (!pattern) {
+    // ignore name of childNodes
+    return node
+  }
+  const childNodeNames = typeof pattern === 'string' ? [pattern] : pattern
+  if (node.childNodes.length !== childNodeNames.length) {
+    return null
+  }
+  let lastNode = node
+  for (let i = 0; i < childNodeNames.length; i++) {
+    const child = node.childNodes[i]
+    const name = childNodeNames[i]
+    const [childName, pattern] = typeof name === 'string' ? [name, null] : name
+    if (childName === child.nodeName && (lastNode = lastMatchChildNode(child, pattern))) {
+      //
+    } else {
+      return null
+    }
+  }
+
+  return lastNode
 }
 
 function isFirstTbody (/** @type {HTMLElement} */element) {

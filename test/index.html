@@ -309,7 +309,7 @@
 | Heading | Not a heading |</pre>
 </div>
 
-<div class="case" data-name="bold row as head">
+<div class="case" data-name="bold row as head: use font-weight">
   <div class="input">
     <table style="border-collapse: collapse; min-width: 100%;">
       <colgroup>
@@ -340,6 +340,71 @@
 | title2 | name |
 | --- | --- |
 | hello | word |</pre>
+</div>
+
+<div class="case" data-name="bold row as head: use b tag">
+  <div class="input">
+    <table width="719px" style="border-collapse:collapse;width:719px;">
+      <colgroup>
+          <col style="width: 130px;" />
+          <col style="width: 589px;" />
+      </colgroup>
+      <tbody>
+          <tr>
+              <td style="border-color:#ccc;border-width:1px;border-style:solid;padding:10px;">
+                  <div><b>Example</b></div>
+              </td>
+              <td style="border-color:#ccc;border-width:1px;border-style:solid;padding:10px;">
+                  <div><b>Example</b></div>
+              </td>
+          </tr>
+          <tr>
+              <td style="border-color:#ccc;border-width:1px;border-style:solid;padding:10px;">
+                  <div>hello_world</div>
+              </td>
+              <td style="border-color:#ccc;border-width:1px;border-style:solid;padding:10px;">
+                  <div>word</div>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+  </div>
+  <pre class="expected">  
+| **Example** | **Example** |
+| --- | --- |
+| hello_world | word |</pre>
+</div>
+
+<div class="case" data-name="bold row as head: with empty head">
+  <div class="input">
+    <table>
+      <colgroup>
+          <col style="width: 130px;" />
+          <col style="width: 589px;" />
+      </colgroup>
+      <tbody>
+          <tr>
+              <td >
+              </td>
+              <td >
+                  <div><b>Example</b></div>
+              </td>
+          </tr>
+          <tr>
+              <td >
+                  <div>hello_world</div>
+              </td>
+              <td>
+                  <div>word</div>
+              </td>
+          </tr>
+      </tbody>
+  </table>
+  </div>
+  <pre class="expected">  
+|     | **Example** |
+| --- | --- |
+| hello_world | word |</pre>
 </div>
 
 <div class="case" data-name="highlighted code block with html">

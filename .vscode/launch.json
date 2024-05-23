@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/test/turndown-plugin-gfm-test.js",
+            "program": "${workspaceFolder}/test/turndown-plugin-gfm-test.cjs",
             "preLaunchTask": "npm: watch"
         }
     ]
